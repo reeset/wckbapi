@@ -1,0 +1,38 @@
+require 'rubygems'
+require_relative 'lib/wckbapi'
+
+client = WCKBAPI::Client.new :wskey => '[your_key_here']
+
+objc = client.GetCollectionInfo(:collection_uid => 'NPG.journals')
+puts "Collection Info: \n"
+puts "Title: " + objc[0].title
+puts "Collection_uid: " + objc[0].collection_uid
+
+
+puts "\n"
+puts "******************* Collection Info ******************"
+objc = client.GetCollectionInfo(:collection_uid => 'BMC.openAccess', 
+				:institution_id => '128807',
+				:type => 'search')
+
+puts "Collection Info (enum):\n"
+objc.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "Collection_uid: " + i.collection_uid + "\n"
+  puts "\n"
+} 
+
+puts "\n" 
+puts "******************* Collection Info Search **************"
+objc = client.GetCollectionInfo(:institution_id => '128807', 
+			        :title => 'S%', 
+			        :type => 'search')
+
+puts "Collection Info Search (enum):\n"
+objc.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "Collection_uid: " + i.collection_uid + "\n"
+  puts "\n"
+}
+
+

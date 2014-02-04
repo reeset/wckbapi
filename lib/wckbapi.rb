@@ -1,0 +1,11 @@
+require_relative 'wckbapi/client'
+require_relative 'wckbapi/collection'
+#require 'wckbapi/open_search_response'
+#require 'wckbapi/get_record_response'
+#require 'wckbapi/get_location_response'
+#require 'wckbapi/sru_search_response'
+require 'nokogiri'
+require 'json'
+
+WORLDCAT_OPENSEARCH = 'http://www.worldcat.org/webservices/catalog/search/opensearch'
+WORLDCAT_KB_URL = 'http://www.worldcat.org/webservices/kb/rest/'
