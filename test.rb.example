@@ -1,7 +1,7 @@
 require 'rubygems'
 require_relative 'lib/wckbapi'
 
-client = WCKBAPI::Client.new :wskey => '[your_key_here']
+client = WCKBAPI::Client.new :wskey => '[add_your_key]'
 
 objc = client.GetCollectionInfo(:collection_uid => 'NPG.journals')
 puts "Collection Info: \n"
@@ -35,4 +35,73 @@ objc.each {|i|
   puts "\n"
 }
 
+puts "\n"
+puts "********************** SearchCollections ***************"
+objc = client.SearchCollections(:institution_id => "128807", 
+				:title => 'S%')
 
+puts "Search Collection (enum):\n"
+objc.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "Collection_uid: " + i.collection_uid + "\n"
+  puts "\n"
+}
+
+puts "\n"
+puts "*********************** Retrieve Providers *************"
+objP = client.GetProviderInfo()
+objP.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "id: " + i.id + "\n"
+}
+
+puts "\n"
+puts "********************** Retrieve Providers **"
+objP = client.GetProviderInfo(:title => 'BioOne')
+objP.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "id: " + i.id + "\n"
+}
+
+puts "\n"
+puts "********************** Retrieve Providers Search ********"
+objP = client.SearchProviders(:institution_id => 128807)
+objP.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "id: " + i.id + "\n"
+}
+
+puts "\n"
+puts "********************** Return and entry *****************"
+objE = client.GetEntry(:collection_uid => 'ebrary.humanities',
+		       :entry_uid => '5639208')
+
+objE.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "id: " + i.id + "\n"
+}
+
+puts "\n"
+puts "********************* Return entry with entry id *******"
+
+objE = client.GetEntry(:id => 'http://worldcat.org/webservices/kb/rest/entries/ebrary.humanities,5639208')
+objE.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "id: " + i.id + "\n"
+}
+
+puts "\n"
+
+puts "\n"
+puts "********************* Search Entries *******************"
+objE = client.SearchEntries(:institution_id => '128807',
+			    :title => '"B%"')
+
+objE.each {|i|
+  puts "Title: " + i.title + "\n"
+  puts "id: " + i.id + "\n"
+}
+
+puts "\n\n"
+
+puts "finished with tests"

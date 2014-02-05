@@ -40,6 +40,89 @@ module WCKBAPI
     #  return OpenSearchResponse.new(xml)
     #end
 
+    def GetEntry(opts = {})
+       opts[:wskey] = @wskey
+       opts[:alt] = 'json'
+       if opts[:id] == nil
+          @base = URI.parse WORLDCAT_KB_URL + "entries/" + opts[:collection_uid] + "," + opts[:entry_uid]
+          opts.delete(:collection_uid)
+          opts.delete(:entry_uid)
+       else
+	  @base = URI.parse opts[:id]
+	  opts.delete(:id)
+       end
+
+       data = do_request(opts)
+       json = JSON.parse(data)
+       objE = Entry.new()
+       objE.load(json)
+       return Array(objE)
+    end
+
+    def SearchEntries(opts={})
+       opts[:wskey] = @wskey
+       opts[:alt] = 'json'
+       @base = URI.parse WORLDCAT_KB_URL + "entries/search"
+       data = do_request(opts)
+       json = JSON.parse(data)
+       objArray = Array.new()
+       json['entries'].each {|item|
+	   objE = Entry.new()
+           objE.load(item)
+	   objArray.push(objE)
+	}
+	return objArray
+     end
+
+    def SearchProviders(opts={})
+       opts[:type] = 'search'
+       return GetProviderInfo(opts)
+    end
+
+    def GetProviderInfo(opts={})
+       if opts == nil
+         opts = Hash.new()
+       end 
+
+       opts[:wskey] = @wskey
+       opts[:alt] = 'json'
+       if opts[:type] == nil
+          if opts[:collection_uid] == nil
+     	     @base = URI.parse WORLDCAT_KB_URL + "providers"
+          else
+	     @base = URI.parse WORLDCAT_KB_URL + "providers/" + opts[:title]
+	  end
+	  opts.delete(:collection_uid)
+          data = do_request(opts)
+          json = JSON.parse(data)
+          if json['entries'] != nil
+	     objArray = Array.new()
+	     json['entries'].each {|item|
+		objP = Provider.new()
+		objP.load(item)
+	  	objArray.push(objP)
+	     }
+	     return objArray
+	  else		
+	     objP = Provider.new()
+	     objP.load(json)
+	     return Array(objP)
+	  end
+	else 
+	   opts.delete(:type)
+	   @base = URI.parse WORLDCAT_KB_URL + "providers/search"
+	   data = do_request(opts)
+	   json = JSON.parse(data)
+	   objArray = Array.new()
+	   json['entries'].each {|item|
+	      objP = Provider.new()
+	      objP.load(item)
+	      objArray.push(objP)
+	   }
+	   return objArray
+	end
+    end
+
     def GetCollectionInfo(opts={})
        opts[:wskey] = @wskey 
        opts[:alt] = 'json'
@@ -71,6 +154,11 @@ module WCKBAPI
        end
     end
 
+    def SearchCollections(opts={})
+        opts[:type] = 'search'
+	return GetCollectionInfo(opts)
+    end
+
     #def GetRecord(opts={})
     #  if opts[:type] == 'oclc'
     #     @base = URI.parse "http://www.worldcat.org/webservices/catalog/content/" + opts[:id]
@@ -99,6 +187,7 @@ module WCKBAPI
       end
       uri.query = parts.join('&')
       debug("doing request: #{uri.to_s}")
+      puts uri.to_s
       begin
         data = Net::HTTP.get(uri)
         debug("got response: #{data}")

@@ -1,5 +1,7 @@
 require_relative 'wckbapi/client'
 require_relative 'wckbapi/collection'
+require_relative 'wckbapi/provider'
+require_relative 'wckbapi/entry'
 #require 'wckbapi/open_search_response'
 #require 'wckbapi/get_record_response'
 #require 'wckbapi/get_location_response'
