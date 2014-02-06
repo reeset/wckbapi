@@ -54,9 +54,14 @@ module WCKBAPI
 
        data = do_request(opts)
        json = JSON.parse(data)
+       objResult = Result.new()
+       objResult.query = ""
+       objResult.startIndex = 1
+       objResult.totalResults = 1
+       objResult.itemsPerPage = 1
        objE = Entry.new()
        objE.load(json)
-       return Array(objE)
+       return objResult, Array(objE)
     end
 
     def SearchEntries(opts={})
@@ -66,12 +71,17 @@ module WCKBAPI
        data = do_request(opts)
        json = JSON.parse(data)
        objArray = Array.new()
+       objResult = Result.new()
+       objResult.query = json['os:Query'] 
+       objResult.startIndex = json['os:startIndex'] 
+       objResult.totalResults = json['os:totalResults']
+       objResult.itemsPerPage = json['os:itemsPerPage']
        json['entries'].each {|item|
 	   objE = Entry.new()
            objE.load(item)
 	   objArray.push(objE)
 	}
-	return objArray
+	return objResult, objArray
      end
 
     def SearchProviders(opts={})
@@ -95,31 +105,48 @@ module WCKBAPI
 	  opts.delete(:collection_uid)
           data = do_request(opts)
           json = JSON.parse(data)
-          if json['entries'] != nil
+          objResult = Result.new()
+	  if json['entries'] != nil
+             objResult.query =json['os:Query'] 
+	     objResult.startIndex =json['os:startIndex'] 
+	     objResult.totalResults = json['os:totalResults'] 
+	     objResult.itemsPerPage = json['os:itemsPerPage']
+
 	     objArray = Array.new()
 	     json['entries'].each {|item|
 		objP = Provider.new()
 		objP.load(item)
 	  	objArray.push(objP)
 	     }
-	     return objArray
+	     return objResult, objArray
 	  else		
+	     objResult.query = "" 
+	     objResult.startIndex = 1
+	     objResult.totalResults = 1
+	     objResult.itemsPerPage = 1
+
 	     objP = Provider.new()
 	     objP.load(json)
-	     return Array(objP)
+	     return objResult, Array(objP)
 	  end
 	else 
 	   opts.delete(:type)
 	   @base = URI.parse WORLDCAT_KB_URL + "providers/search"
 	   data = do_request(opts)
 	   json = JSON.parse(data)
+  	   objResult = Result.new()
+	   objResult.query = json['os:Query'] 
+	   objResult.startIndex = json['os:startIndex']
+	   objResult.totalResults = json['os:totalResults']
+	   objResult.itemsPerPage = json['os:itemsPerPage']
+
 	   objArray = Array.new()
 	   json['entries'].each {|item|
 	      objP = Provider.new()
 	      objP.load(item)
 	      objArray.push(objP)
 	   }
-	   return objArray
+	   return objResult, objArray
 	end
     end
 
@@ -136,21 +163,33 @@ module WCKBAPI
           opts.delete(:collection_uid)
           data = do_request(opts)
           json = JSON.parse(data) 
+ 	  objResult = Result.new()
+	  objResult.query = "" 
+	  objResult.startIndex = 1
+	  objResult.totalResults = 1
+	  objResult.itemsPerPage = 1
+
 	  objC = Collection.new()
           objC.load(json)
-          return Array(objC) 
+          return objResult, Array(objC) 
        else
 	  opts.delete(:type)
 	  @base = URI.parse WORLDCAT_KB_URL + "collections/search"
           data = do_request(opts)
           json = JSON.parse(data)
+	  objResult = Result.new()
+	  objResult.query = json['os:Query']
+	  objResult.startIndex = json['os:startIndex']
+	  objResult.totalResults = json['os:totalResults']
+	  objResult.itemsPerPage = json['os:itemsPerPage']
+
           objArray = Array.new()
           json['entries'].each {|item|
 	    objC = Collection.new()
             objC.load(item)
 	    objArray.push(objC)     
           }
-	  return objArray
+	  return objResult, objArray
        end
     end
 
@@ -158,18 +197,6 @@ module WCKBAPI
         opts[:type] = 'search'
 	return GetCollectionInfo(opts)
     end
-
-    #def GetRecord(opts={})
-    #  if opts[:type] == 'oclc'
-    #     @base = URI.parse "http://www.worldcat.org/webservices/catalog/content/" + opts[:id]
-    #  else
-    #	 @base = URI.parse 'http://www.worldcat.org/webservices/catalog/content/isbn/' + opts[:id]
-    #  end
-    #  opts.delete("type")
-    #  opts["wskey"] = @wskey
-    #  xml = do_request(opts)
-    #  return GetRecordResponse.new(xml)
-    #end
 
 
     private 

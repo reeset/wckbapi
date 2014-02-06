@@ -2,6 +2,7 @@ require 'wckbapi/client'
 require 'wckbapi/collection'
 require 'wckbapi/provider'
 require 'wckbapi/entry'
+require 'wckbapi/result'
 require 'nokogiri'
 require 'json'
 

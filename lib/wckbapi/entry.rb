@@ -18,8 +18,8 @@ module WCKBAPI
 	@oclcnum = item['kb:oclcnum']
 	@author = item['kb:author']
 	@isbn = item['kb:isbn']
-	@publisher = item['publisher']
-	@coverage = item['coverage']
+	@publisher = item['kb:publisher']
+	@coverage = item['kb:coverage']
   	item['links'].each {|t|
 	   if t['rel'] == 'via'
 	     @uri = t['href']
