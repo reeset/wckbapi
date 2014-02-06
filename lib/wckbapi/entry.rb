@@ -24,7 +24,7 @@ module WCKBAPI
 	   if t['rel'] == 'via'
 	     @uri = t['href']
 	   end 
-	end
+	}
     end
   end
 end
