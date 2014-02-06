@@ -1,7 +1,7 @@
 module WCKBAPI
 
   class Collection
-    attr_accessor :id, :title, :provider_uid, :provider_name, :avaiable_entries, :selected_entries, :collection_name, :collection_uid, :owner_institution, :source_institution, :status, :dbkey, :source, :open, :collection_type
+    attr_accessor :id, :title, :provider_uid, :provider_name, :avaiable_entries, :selected_entries, :collection_name, :collection_uid, :owner_institution, :source_institution, :status, :dbkey, :source, :open, :collection_type, :uri
 
     def initialize()
     end
@@ -21,6 +21,13 @@ module WCKBAPI
 	@source = item['kb:source']
 	@open = item['kb:open']
 	@collection_type = item['kb:collection_type']
+
+        item['links'].each {|t|
+           if t['rel'] == 'via'
+              @uri = t['href']
+              break
+           end
+        }
     end
   end
 end
