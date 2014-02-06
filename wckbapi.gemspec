@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name = 'wckbapi'
-    s.version = '0.0.1'
+    s.version = '0.0.2'
     s.author = 'Terry Reese'
     s.email = 'reese.2179@osu.edu'
     s.summary = 'Ruby component for processing the WorldCat KB API'

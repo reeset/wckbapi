@@ -1,7 +1,7 @@
 module WCKBAPI
 
   class Entry
-    attr_accessor :id, :title, :entry_uid, :entry_status, :bkey, :collection_name, :collection_uid, :provider_uid, :provider_name, :oclcnum, :author, :isbn, :publisher, :coverage
+    attr_accessor :id, :title, :entry_uid, :entry_status, :bkey, :collection_name, :collection_uid, :provider_uid, :provider_name, :oclcnum, :author, :isbn, :publisher, :coverage, :uri
 
     def initialize()
     end
@@ -20,6 +20,11 @@ module WCKBAPI
 	@isbn = item['kb:isbn']
 	@publisher = item['publisher']
 	@coverage = item['coverage']
+  	item['links'].each {|t|
+	   if t['rel'] == 'via'
+	     @uri = t['href']
+	   end 
+	end
     end
   end
 end
