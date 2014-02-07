@@ -1,9 +1,9 @@
 require 'rubygems'
-require_relative 'lib/wckbapi'
+require 'wckbapi'
 
-client = WCKBAPI::Client.new :wskey => '[add_your_key]'
+client = WCKBAPI::Client.new :wskey => '[your_key_here]'
 
-objc = client.GetCollectionInfo(:collection_uid => 'NPG.journals')
+objR, objc = client.GetCollectionInfo(:collection_uid => 'NPG.journals')
 puts "Collection Info: \n"
 puts "Title: " + objc[0].title
 puts "Collection_uid: " + objc[0].collection_uid
@@ -11,11 +11,12 @@ puts "Collection_uid: " + objc[0].collection_uid
 
 puts "\n"
 puts "******************* Collection Info ******************"
-objc = client.GetCollectionInfo(:collection_uid => 'BMC.openAccess', 
+objR, objc = client.GetCollectionInfo(:collection_uid => 'BMC.openAccess', 
 				:institution_id => '128807',
 				:type => 'search')
 
 puts "Collection Info (enum):\n"
+puts "Number of results: " + objR.totalResults.to_s + "\n"
 objc.each {|i|
   puts "Title: " + i.title + "\n"
   puts "Collection_uid: " + i.collection_uid + "\n"
@@ -24,11 +25,12 @@ objc.each {|i|
 
 puts "\n" 
 puts "******************* Collection Info Search **************"
-objc = client.GetCollectionInfo(:institution_id => '128807', 
+objR, objc = client.GetCollectionInfo(:institution_id => '128807', 
 			        :title => 'S%', 
 			        :type => 'search')
 
 puts "Collection Info Search (enum):\n"
+puts "Number of Results: " + objR.totalResults.to_s + "\n"
 objc.each {|i|
   puts "Title: " + i.title + "\n"
   puts "Collection_uid: " + i.collection_uid + "\n"
@@ -37,10 +39,11 @@ objc.each {|i|
 
 puts "\n"
 puts "********************** SearchCollections ***************"
-objc = client.SearchCollections(:institution_id => "128807", 
+objR, objc = client.SearchCollections(:institution_id => "128807", 
 				:title => 'S%')
 
 puts "Search Collection (enum):\n"
+puts "Number of Results: " + objR.totalResults.to_s + "\n"
 objc.each {|i|
   puts "Title: " + i.title + "\n"
   puts "Collection_uid: " + i.collection_uid + "\n"
@@ -49,7 +52,7 @@ objc.each {|i|
 
 puts "\n"
 puts "*********************** Retrieve Providers *************"
-objP = client.GetProviderInfo()
+objR, objP = client.GetProviderInfo()
 objP.each {|i|
   puts "Title: " + i.title + "\n"
   puts "id: " + i.id + "\n"
@@ -57,7 +60,7 @@ objP.each {|i|
 
 puts "\n"
 puts "********************** Retrieve Providers **"
-objP = client.GetProviderInfo(:title => 'BioOne')
+objR, objP = client.GetProviderInfo(:title => 'BioOne')
 objP.each {|i|
   puts "Title: " + i.title + "\n"
   puts "id: " + i.id + "\n"
@@ -65,7 +68,8 @@ objP.each {|i|
 
 puts "\n"
 puts "********************** Retrieve Providers Search ********"
-objP = client.SearchProviders(:institution_id => 128807)
+objR, objP = client.SearchProviders(:institution_id => 128807)
+puts "Number of Results: " + objR.totalResults.to_s + "\n"
 objP.each {|i|
   puts "Title: " + i.title + "\n"
   puts "id: " + i.id + "\n"
@@ -73,7 +77,7 @@ objP.each {|i|
 
 puts "\n"
 puts "********************** Return and entry *****************"
-objE = client.GetEntry(:collection_uid => 'ebrary.humanities',
+objR, objE = client.GetEntry(:collection_uid => 'ebrary.humanities',
 		       :entry_uid => '5639208')
 
 objE.each {|i|
@@ -84,7 +88,7 @@ objE.each {|i|
 puts "\n"
 puts "********************* Return entry with entry id *******"
 
-objE = client.GetEntry(:id => 'http://worldcat.org/webservices/kb/rest/entries/ebrary.humanities,5639208')
+objR, objE = client.GetEntry(:id => 'http://worldcat.org/webservices/kb/rest/entries/ebrary.humanities,5639208')
 objE.each {|i|
   puts "Title: " + i.title + "\n"
   puts "id: " + i.id + "\n"
@@ -94,9 +98,10 @@ puts "\n"
 
 puts "\n"
 puts "********************* Search Entries *******************"
-objE = client.SearchEntries(:institution_id => '128807',
+objR, objE = client.SearchEntries(:institution_id => '128807',
 			    :title => '"B%"')
 
+puts "Number of Results: " + objR.totalResults.to_s + "\n"
 objE.each {|i|
   puts "Title: " + i.title + "\n"
   puts "id: " + i.id + "\n"
